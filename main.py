@@ -112,7 +112,8 @@ class Player(Ship):
         for laser in self.lasers:
             laser.move(vel)
             if laser.off_screen(HEIGHT):
-                self.lasers.remove(laser)
+                if laser in self.lasers: # makes sure the laser first exists before removing
+                    self.lasers.remove(laser)
             else: 
                 for obj in objs:
                     if laser.collision(obj):
@@ -165,7 +166,7 @@ def main():
 
     enemies = []
     wave_length = 5
-    enemy_vel = 1
+    enemy_vel = 2
 
     player_vel = 5
     laser_vel = 5
@@ -221,7 +222,7 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                run = False # change to quit() if you want the game to quit the window instead of going to the main menu when clicking X
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] and player.x - player_vel > 0:
@@ -252,5 +253,24 @@ def main():
         player.move_lasers(-laser_vel, enemies)        
 
        
+def main_menu(): # I understand this entire page of code is messy as shit, but i'm following a coding tutorial here
+    title_font = pygame.font.SysFont("comicsans", 55)
+    run = True
+    while run:
+        WIN.blit(BG, (0,0))
+        title_label = title_font.render("Press the mouse to begin...", 1, "white")
+        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
 
-main()            
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                main()    
+
+
+    pygame.quit()
+
+
+main_menu()            
